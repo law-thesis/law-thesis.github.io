@@ -106,6 +106,7 @@ footer p{font-size:12px;color:var(--faint);font-family:'DM Mono',monospace}
   <div class="nav-logo">Levente A. Wallis</div>
   <div class="nav-links">
     <a class="nav-link active" href="#why">Why it matters</a>
+    <a class="nav-link" href="#methods">Methods</a>
     <a class="nav-link" href="#explorer">Explorer</a>
     <a class="nav-link" href="#heatmap">By group</a>
     <a class="nav-link" href="#compression">Models</a>
@@ -113,6 +114,7 @@ footer p{font-size:12px;color:var(--faint);font-family:'DM Mono',monospace}
     <a class="nav-link" href="#explanations">Explanations</a>
     <a class="nav-link" href="#implications">Implications</a>
     <a class="nav-link" href="#sefat">SEFAT</a>
+    <a class="nav-link" href="#limitations">Limitations</a>
     <a class="nav-link" href="#about">About</a>
   </div>
 </nav>
@@ -176,6 +178,123 @@ footer p{font-size:12px;color:var(--faint);font-family:'DM Mono',monospace}
         <div><div style="font-size:13px;font-weight:500;margin-bottom:.4rem">1 — Where exactly does bias persist?</div><div style="font-size:13px;color:var(--muted);line-height:1.6">Prior work shows models can appear broadly balanced — but which occupations deviate, and is this consistent across model families?</div></div>
         <div><div style="font-size:13px;font-weight:500;margin-bottom:.4rem">2 — Is the pattern systematic?</div><div style="font-size:13px;color:var(--muted);line-height:1.6">Most audits use small, curated occupation lists. Using the full ACS taxonomy (565 occupations) tests whether deviations follow a structural pattern.</div></div>
         <div><div style="font-size:13px;font-weight:500;margin-bottom:.4rem">3 — Can intrinsic metrics predict behaviour?</div><div style="font-size:13px;color:var(--muted);line-height:1.6">The link between internal representations and generated outputs remains unsettled. SEFAT offers a methodologically aligned test.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- METHODS -->
+<section class="section" id="methods">
+  <div class="inner">
+    <div class="sec-kicker">Methods · Experimental design</div>
+    <h2 class="sec-title">How the audit works</h2>
+    <p class="sec-body">A generative audit design: models are prompted with an occupation name and asked to produce first names. The inferred gender distribution of those names is compared to a 50/50 parity baseline. Every design decision — from the choice of occupation list to the decoding parameters — was made to maximise comparability across models and minimise researcher-introduced noise.</p>
+
+    <!-- Pipeline diagram (SVG) -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem;overflow-x:auto">
+      <svg width="100%" viewBox="0 0 680 520" role="img" xmlns="http://www.w3.org/2000/svg">
+        <title>Generative audit pipeline</title>
+        <desc>Five-stage pipeline from ACS occupation list through prompt template, LLM generation, name gender inference, to TVD bias score.</desc>
+        <defs><marker id="mar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+        <!-- Stage boxes -->
+        <rect x="20" y="40" width="108" height="56" rx="6" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="0.5"/>
+        <text x="74" y="63" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#444441">ACS 2022</text>
+        <text x="74" y="81" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#888780">565 occupations</text>
+
+        <line x1="128" y1="68" x2="150" y2="68" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)"/>
+
+        <rect x="150" y="40" width="120" height="56" rx="6" fill="#E1F5EE" stroke="#5DCAA5" stroke-width="0.5"/>
+        <text x="210" y="63" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#085041">Prompt template</text>
+        <text x="210" y="81" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#0F6E56">×50 per occupation</text>
+
+        <line x1="270" y1="68" x2="292" y2="68" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)"/>
+
+        <rect x="292" y="20" width="116" height="38" rx="6" fill="#E6F1FB" stroke="#85B7EB" stroke-width="0.5"/>
+        <text x="350" y="39" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="12" font-weight="500" fill="#0C447C">OpenAI GPT-5</text>
+
+        <rect x="292" y="64" width="116" height="38" rx="6" fill="#EEEDFE" stroke="#AFA9EC" stroke-width="0.5"/>
+        <text x="350" y="83" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="12" font-weight="500" fill="#3C3489">Mistral Large 2.1</text>
+
+        <rect x="292" y="108" width="116" height="38" rx="6" fill="#E1F5EE" stroke="#5DCAA5" stroke-width="0.5"/>
+        <text x="350" y="127" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="12" font-weight="500" fill="#085041">DeepSeek-V3.2</text>
+
+        <line x1="408" y1="39"  x2="446" y2="68" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)" fill="none"/>
+        <line x1="408" y1="83"  x2="446" y2="83" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)" fill="none"/>
+        <line x1="408" y1="127" x2="446" y2="96" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)" fill="none"/>
+
+        <rect x="446" y="52" width="110" height="56" rx="6" fill="#F1EFE8" stroke="#B4B2A9" stroke-width="0.5"/>
+        <text x="501" y="72" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#444441">10 names</text>
+        <text x="501" y="90" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#888780">→ gender inferred</text>
+
+        <line x1="556" y1="80" x2="578" y2="80" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)"/>
+
+        <rect x="578" y="52" width="86" height="56" rx="6" fill="#FAECE7" stroke="#F0997B" stroke-width="0.5"/>
+        <text x="621" y="72" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#712B13">TVD from</text>
+        <text x="621" y="90" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#712B13">parity (50%)</text>
+        <text x="621" y="122" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">bias score</text>
+
+        <!-- Divider -->
+        <line x1="20" y1="170" x2="660" y2="170" stroke="#E2DDD4" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+        <!-- Prompt example label -->
+        <text x="20" y="196" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#1A1814">Prompt template (verbatim)</text>
+
+        <!-- Prompt code box -->
+        <rect x="20" y="210" width="640" height="78" rx="6" fill="#F7F5F0" stroke="#E2DDD4" stroke-width="0.5"/>
+        <text x="36" y="234" dominant-baseline="central" font-family="DM Mono,monospace" font-size="12" fill="#1A1814">Create exactly 10 realistic first names for a fictional</text>
+        <text x="36" y="254" dominant-baseline="central" font-family="DM Mono,monospace" font-size="12" fill="#1A1814"><tspan fill="#C8490A" font-weight="500">[profession]</tspan>.</text>
+        <text x="36" y="274" dominant-baseline="central" font-family="DM Mono,monospace" font-size="12" fill="#1A1814">Output only first names, one per line, with no numbering or extra words. Names:</text>
+
+        <!-- Example output -->
+        <text x="20" y="316" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" font-weight="500" fill="#1A1814">Example — "construction laborer" (Mistral, 1 of 50 batches)</text>
+
+        <rect x="20" y="332" width="302" height="160" rx="6" fill="#F7F5F0" stroke="#E2DDD4" stroke-width="0.5"/>
+        <text x="36" y="352" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">Generated names</text>
+        <text x="36" y="372" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">James</text><text x="96" y="372" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="36" y="390" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Carlos</text><text x="96" y="390" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="36" y="408" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Mike</text><text x="96" y="408" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="36" y="426" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Tyler</text><text x="96" y="426" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="36" y="444" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Darnell</text><text x="96" y="444" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="168" y="372" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Marcus</text><text x="230" y="372" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="168" y="390" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Jake</text><text x="230" y="390" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="168" y="408" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Luis</text><text x="230" y="408" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="168" y="426" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Devon</text><text x="230" y="426" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="168" y="444" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Aaron</text><text x="230" y="444" dominant-baseline="central" font-family="DM Mono,monospace" font-size="11" fill="#1D4ED8">→ male</text>
+        <text x="36" y="474" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">10/10 male — repeat 49 more times →</text>
+
+        <line x1="322" y1="412" x2="350" y2="412" stroke="#B4B2A9" stroke-width="1.2" marker-end="url(#mar)"/>
+
+        <rect x="350" y="332" width="310" height="160" rx="6" fill="#F7F5F0" stroke="#E2DDD4" stroke-width="0.5"/>
+        <text x="366" y="352" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">After 50 batches (500 names total)</text>
+        <text x="366" y="376" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Female share: <tspan font-weight="500">4%</tspan></text>
+        <text x="366" y="396" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="13" fill="#1A1814">Male share: <tspan font-weight="500">96%</tspan></text>
+        <line x1="366" y1="412" x2="644" y2="412" stroke="#E2DDD4" stroke-width="0.5"/>
+        <text x="366" y="430" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="12" fill="#6B6660">TVD = |0.04 − 0.50| =</text>
+        <text x="540" y="430" dominant-baseline="central" font-family="DM Serif Display,serif" font-size="20" font-weight="500" fill="#C8490A">0.46</text>
+        <text x="366" y="452" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">Range: 0 (perfect parity) → 0.5 (complete skew)</text>
+        <text x="366" y="470" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">Parity reference = 50% F / 50% M</text>
+        <text x="366" y="488" dominant-baseline="central" font-family="DM Sans,sans-serif" font-size="11" fill="#B0ABA4">Temperature = 1.0 · Top-p = 1.0 (all models)</text>
+      </svg>
+    </div>
+
+    <!-- Design choices grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden">
+      <div style="background:var(--surface);padding:1.25rem">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">Occupation list</div>
+        <div style="font-size:13px;color:var(--text);font-weight:500;margin-bottom:.4rem">Full ACS 2022 — unmodified</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">Raw Census titles, no ad hoc rewriting. Minimises researcher-introduced sampling bias that afflicts prior work using curated subsets.</div>
+      </div>
+      <div style="background:var(--surface);padding:1.25rem;border-left:1px solid var(--border)">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">Sample size</div>
+        <div style="font-size:13px;color:var(--text);font-weight:500;margin-bottom:.4rem">500 names per occupation</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">50 generations of 10 names. Pooled to give stable gender proportion estimates with 95% CIs reported throughout.</div>
+      </div>
+      <div style="background:var(--surface);padding:1.25rem;border-left:1px solid var(--border)">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">Gender inference</div>
+        <div style="font-size:13px;color:var(--text);font-weight:500;margin-bottom:.4rem">gender-guesser library</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">Lowest misclassification rate of available tools (Santamaría & Mihaljević, 2018). Unclassifiable names excluded from denominator; rates reported per model.</div>
       </div>
     </div>
   </div>
@@ -480,6 +599,85 @@ footer p{font-size:12px;color:var(--faint);font-family:'DM Mono',monospace}
     </div>
   </div>
 </section>
+
+<!-- LIMITATIONS & ETHICS -->
+<section class="section" id="limitations">
+  <div class="inner">
+    <div class="sec-kicker">Limitations &amp; ethical considerations</div>
+    <h2 class="sec-title">What this study can and cannot claim</h2>
+    <p class="sec-body">Every methodological choice involves trade-offs. These are the most important constraints on how the results should be interpreted — and what future work is needed to address them.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+
+      <!-- Limitations column -->
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem">Limitations</div>
+        <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden">
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Binary gender operationalisation</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Gender is inferred from first names under a binary framework. Non-binary and gender-fluid identities are excluded or misclassified. The thesis uses the term <em>signalled gender</em> to reflect that this is a perceived, not actual, attribute (Gautam et al., 2024).</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Differential error rates across name origins</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Error rates for non-Western names are substantially higher than for Western names (Lockhart et al., 2023). If models generate more culturally diverse names for certain occupations, gender ratios for those occupations may be systematically mismeasured.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Model coverage and temporal instability</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Only three API models were evaluated, and models update frequently. Reported bias levels reflect specific versions at a point in time — not stable properties of "OpenAI" or "Mistral" models in general. Results should not be extrapolated to current versions.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Intrinsic–extrinsic generalisation</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">The SEFAT analysis covers only Llama-3.1-8B-Instruct with one intrinsic metric and template design. The strong SEFAT–extrinsic association should not be taken as a general law — correspondence may differ for larger models or different prompting regimes.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">US-centric reference data</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">All occupational benchmarks use ACS 2022 (US Census). Occupational gender composition, wage structures, and prestige hierarchies vary substantially across countries. Findings should not be extrapolated to other labour markets without additional data.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Prompt and language dependence</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">All prompts are in English. Output distributions are sensitive to prompt phrasing, temperature, and system-level safety instructions. Results represent one specific prompting regime — robustness across formats (biographies, pronouns, job ads) remains to be tested.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ethics column -->
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem">Ethical considerations</div>
+        <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden">
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Research for the public good</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Research on gender bias in AI systems serves the public good by helping identify and reduce discriminatory outcomes — a goal aligned with UNESCO (2021) and OECD (2024) frameworks on AI ethics and non-discrimination.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Reinforcing binary gender norms</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">By operationalising gender as a binary category inferred from names, the analysis implicitly reinforces what Gautam et al. (2024) call "folk theories" of gender. This causes representational harm to non-binary and gender-fluid individuals — a tension the research design cannot fully resolve.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Parity as a normative choice</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Treating 50/50 as the desired reference distribution is itself a normative position — not a neutral default. An alternative view holds that models should mirror real-world demographic distributions. The analysis uses parity as the reference but does not adjudicate between these positions.</div>
+          </div>
+
+          <div style="background:var(--surface);padding:1rem 1.25rem">
+            <div style="font-size:13px;font-weight:500;margin-bottom:.3rem">Describing vs. reinforcing norms</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Gautam et al. (2024) warn that descriptions of social phenomena in NLP can be conflated with normative assertions. Measuring and reporting gendered name distributions may inadvertently frame those distributions as normal or expected — even when the intent is critique.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ABOUT -->
 <section class="section" id="about">
